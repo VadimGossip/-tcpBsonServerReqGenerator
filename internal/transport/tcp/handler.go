@@ -60,10 +60,10 @@ func (h *Handler) readConnection(conn net.Conn, resMsgChan chan<- domain.ConByte
 	}
 }
 
-func (h *Handler) writeConnection(reqMsgChan <-chan domain.ConBytesMsg) error {
+func (h *Handler) writeConnection(conn net.Conn, reqMsgChan <-chan domain.ByteMsg) error {
 	for {
 		msg := <-reqMsgChan
-		_, err := msg.Conn.Write(msg.MsgBody)
+		_, err := conn.Write(msg.MsgBody)
 		if err != nil {
 			return fmt.Errorf("error occured while write responce from router to tcp conn: %s", err.Error())
 		}
@@ -91,9 +91,8 @@ func (h *Handler) WriteResponseStat(resMsgChan chan domain.ConBytesMsg, stopMain
 }
 
 func (h *Handler) GenerateAndSend(conn net.Conn) {
-	reqMsgChan := make(chan domain.ConBytesMsg, 100)
-	resMsgChan := make(chan domain.ConBytesMsg, 100)
 	reqBytesChan := make(chan domain.ByteMsg, 100)
+	resMsgChan := make(chan domain.ConBytesMsg, 100)
 	stopMainChan := make(chan bool)
 
 	go h.rg.GenerateRequestsEndless(reqBytesChan)
@@ -103,7 +102,7 @@ func (h *Handler) GenerateAndSend(conn net.Conn) {
 	}
 
 	go func() {
-		err := h.writeConnection(reqMsgChan)
+		err := h.writeConnection(conn, reqBytesChan)
 		if err != nil {
 			logrus.Errorf("writeConnection error %s", err)
 			stopMainChan <- true
