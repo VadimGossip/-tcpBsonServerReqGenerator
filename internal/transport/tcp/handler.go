@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"encoding/binary"
 	"fmt"
 	"github.com/VadimGossip/tcpBsonServerReqGenerator/internal/domain"
 	"github.com/VadimGossip/tcpBsonServerReqGenerator/internal/service"
+	"github.com/VadimGossip/tcpBsonServerReqGenerator/pkg/utils"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"net"
@@ -19,16 +19,12 @@ func NewHandler(RequestGenerator *service.RequestGenerator) *Handler {
 	return &Handler{rg: RequestGenerator}
 }
 
-func getBsonBytesLength(lengthSlice []byte) int {
-	return int(binary.LittleEndian.Uint32(lengthSlice))
-}
-
 func (h *Handler) readConnection(conn net.Conn, resMsgChan chan<- domain.ConBytesMsg, ttl time.Duration) error {
 	for {
 		ts := time.Now()
 		fullBody := make([]byte, 4)
 		_, err := conn.Read(fullBody)
-		lengthBytes := getBsonBytesLength(fullBody)
+		lengthBytes := utils.GetBsonBytesLength(fullBody)
 		if err != nil {
 			return err
 		}

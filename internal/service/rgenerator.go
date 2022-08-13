@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/VadimGossip/tcpBsonServerReqGenerator/internal/config"
 	"github.com/VadimGossip/tcpBsonServerReqGenerator/internal/domain"
+	"github.com/VadimGossip/tcpBsonServerReqGenerator/pkg/utils"
 	"go.mongodb.org/mongo-driver/bson"
-	"math"
 	"sync"
 	"time"
 )
@@ -128,20 +128,6 @@ func (rg *RequestGenerator) GenerateRequestsEndless(reqBytesChan chan<- domain.B
 	done <- true
 }
 
-func Round(x float64, prec int) float64 {
-	var rounder float64
-	pow := math.Pow(10, float64(prec))
-	intermed := x * pow
-	_, frac := math.Modf(intermed)
-	if frac >= 0.5 {
-		rounder = math.Ceil(intermed)
-	} else {
-		rounder = math.Floor(intermed)
-	}
-
-	return rounder / pow
-}
-
 func (rg *RequestGenerator) analyzeDurations(durations []time.Duration) (map[float64]int, time.Duration, time.Duration, time.Duration) {
 	histogram := make(map[float64]int)
 	var min, max, sum time.Duration
@@ -158,7 +144,7 @@ func (rg *RequestGenerator) analyzeDurations(durations []time.Duration) (map[flo
 			}
 		}
 		sum += val
-		histogram[(Round(float64(val.Milliseconds()/100), 0)*100)+100]++
+		histogram[(utils.Round(float64(val.Milliseconds()/100), 0)*100)+100]++
 	}
 	return histogram, sum / time.Duration(len(durations)), min, max
 }
