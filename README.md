@@ -10,9 +10,9 @@ requestGenerator:
 Query example:
 ```
 type RouteRequest struct {
-  RequestType string           `bson:"requestType"`
-  MsgId	    int                `bson:"msgId"`
-  SendTime    time.Time        `bson:"sendTime"`
+  RequestType   string         `bson:"requestType"`
+  MsgId	        int            `bson:"msgId"`
+  SendTime      time.Time      `bson:"sendTime"`
   RouteDuration time.Duration  `bson:"routeDur"`
 }
 ```
