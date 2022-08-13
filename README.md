@@ -24,10 +24,10 @@ https://github.com/VadimGossip/tcpBsonServerExample
 Server response example:
 ```
 type RouteResponse struct {
-  Err            string        `bson:"err,omitempty"`
-  SendTime       time.Time     `bson:"sendTime,omitempty"`
-  RouteStartTime time.Time	   `bson:"routeBegin,omitempty"`
-  RouteEndTime   time.Time	   `bson:"routeEnd,omitempty"`
+  Err            string     `bson:"err,omitempty"`
+  SendTime       time.Time  `bson:"sendTime,omitempty"`
+  RouteStartTime time.Time  `bson:"routeBegin,omitempty"`
+  RouteEndTime   time.Time  `bson:"routeEnd,omitempty"`
 }
 ```
 When the program finishes, it generates a response of the form:
