@@ -12,8 +12,8 @@ Query example:
 type RouteRequest struct {
   RequestType string           `bson:"requestType"`
   MsgId	    int                `bson:"msgId"`
-  SendTime    time.Time     	 `bson:"sendTime"`
-  RouteDuration time.Duration	 `bson:"routeDur"`
+  SendTime    time.Time        `bson:"sendTime"`
+  RouteDuration time.Duration  `bson:"routeDur"`
 }
 ```
 The RouteDuartion parameter is needed to emulate somehow working on the server side. 
@@ -26,8 +26,8 @@ Server response example:
 type RouteResponse struct {
   Err            string        `bson:"err,omitempty"`
   SendTime       time.Time     `bson:"sendTime,omitempty"`
-  RouteStartTime time.Time		 `bson:"routeBegin,omitempty"`
-  RouteEndTime   time.Time		 `bson:"routeEnd,omitempty"`
+  RouteStartTime time.Time	   `bson:"routeBegin,omitempty"`
+  RouteEndTime   time.Time	   `bson:"routeEnd,omitempty"`
 }
 ```
 When the program finishes, it generates a response of the form:
