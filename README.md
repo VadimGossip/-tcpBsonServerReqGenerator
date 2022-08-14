@@ -16,7 +16,7 @@ type RouteRequest struct {
   RouteDuration time.Duration  `bson:"routeDur"`
 }
 ```
-The RouteDuartion parameter is needed to emulate somehow working on the server side. 
+The RouteDuration parameter is needed to emulate somehow working on the server side. 
 
 Server example:
 https://github.com/VadimGossip/tcpBsonServerExample
