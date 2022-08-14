@@ -3,7 +3,6 @@ package handler
 import (
 	"fmt"
 	"github.com/VadimGossip/tcpBsonServerReqGenerator/internal/domain"
-	"github.com/VadimGossip/tcpBsonServerReqGenerator/internal/service"
 	"github.com/VadimGossip/tcpBsonServerReqGenerator/pkg/utils"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
@@ -12,11 +11,24 @@ import (
 )
 
 type Handler struct {
-	rg *service.RequestGenerator
+	rg RGenerator
 }
 
-func NewHandler(RequestGenerator *service.RequestGenerator) *Handler {
-	return &Handler{rg: RequestGenerator}
+type RGenerator interface {
+	GetSent() int
+	GetReceived() int
+	GetFinished() bool
+	GetDurations() []time.Duration
+	SetSent()
+	SetReceived()
+	SetFinished()
+	SetDuration(duration time.Duration)
+	GenerateRequestsEndless(reqBytesChan chan<- domain.ByteMsg)
+	PrintStatReport()
+}
+
+func NewHandler(rg RGenerator) *Handler {
+	return &Handler{rg: rg}
 }
 
 func (h *Handler) readConnection(conn net.Conn, resMsgChan chan<- domain.ConBytesMsg, ttl time.Duration) error {

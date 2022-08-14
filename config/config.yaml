@@ -5,4 +5,4 @@ serverListener:
 
 requestGenerator:
     routePerSec: 100
-    workTimeSec: 5
+    workTimeSec: 1
