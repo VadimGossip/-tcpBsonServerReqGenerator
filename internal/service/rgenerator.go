@@ -5,6 +5,7 @@ import (
 	"github.com/VadimGossip/tcpBsonServerReqGenerator/internal/config"
 	"github.com/VadimGossip/tcpBsonServerReqGenerator/internal/domain"
 	"github.com/VadimGossip/tcpBsonServerReqGenerator/pkg/utils"
+	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"sync"
 	"time"
@@ -72,6 +73,11 @@ func (rg *RequestGenerator) GetDurations() []time.Duration {
 }
 
 func (rg *RequestGenerator) GenerateRequestsEndless(reqBytesChan chan<- domain.ByteMsg) {
+	logrus.WithFields(
+		logrus.Fields{
+			"RoutePerSec": rg.config.RoutePerSec,
+			"WorkTimeSec": rg.config.WorkTimeSec,
+		}).Info("Generation started")
 	var tickerStep time.Duration
 	var ttlNum int
 	req := domain.RouteRequest{

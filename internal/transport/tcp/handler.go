@@ -69,18 +69,18 @@ func (h *Handler) readConnection(conn net.Conn, resMsgChan chan<- domain.ConByte
 }
 
 func (h *Handler) writeConnection(conn net.Conn, reqMsgChan <-chan domain.ByteMsg) error {
-	for {
-		msg := <-reqMsgChan
+	for msg := range reqMsgChan {
 		_, err := conn.Write(msg.MsgBody)
 		if err != nil {
 			return fmt.Errorf("error occured while write responce from router to tcp conn: %s", err.Error())
 		}
 	}
+	return nil
 }
 
-func (h *Handler) WriteResponseStat(resMsgChan chan domain.ConBytesMsg, stopMainChan chan bool) {
-	for {
-		resBytes := <-resMsgChan
+func (h *Handler) WriteResponseStat(resMsgChan <-chan domain.ConBytesMsg, stopMainChan chan bool) {
+	logrus.Info("WriteResponseStat")
+	for resBytes := range resMsgChan {
 		var res domain.RouteResponse
 		err := bson.Unmarshal(resBytes.MsgBody, &res)
 		if err != nil {
@@ -127,6 +127,15 @@ func (h *Handler) GenerateAndSend(conn net.Conn) {
 	}()
 
 	if <-stopMainChan {
+		if err := conn.Close(); err != nil {
+			logrus.WithFields(
+				logrus.Fields{
+					"process": "close connection on stop main chan",
+				}).Error(err)
+		}
+		close(reqBytesChan)
+		close(resMsgChan)
+		close(stopMainChan)
 		h.rg.PrintStatReport()
 	}
 }
